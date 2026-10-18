@@ -6,6 +6,43 @@ from __future__ import annotations
 from typing import Any
 
 WIRE_SCHEMAS_PART_6: dict[str, tuple[Any, dict[str, tuple[str, str | None]]]] = {
+    "InboxEventData": (
+        None,
+        {
+            "source": ("source", None),
+            "inbox_id": ("inbox_id", None),
+            "inbox": ("inbox", "Inbox"),
+        },
+    ),
+    "InboxDeletedEventData": (
+        None,
+        {
+            "source": ("source", None),
+            "inbox_id": ("inbox_id", None),
+        },
+    ),
+    "InboxThreadEmailEventData": (
+        None,
+        {
+            "source": ("source", None),
+            "inbox_id": ("inbox_id", None),
+            "thread_id": ("thread_id", None),
+            "email_id": ("email_id", None),
+            "thread": ("thread", "InboxThreadSummary"),
+            "email": ("email", "InboxEventEmail"),
+        },
+    ),
+    "InboxThreadFolderUpdatedEventData": (
+        None,
+        {
+            "from_": ("from", None),
+            "to": ("to", None),
+            "source": ("source", None),
+            "inbox_id": ("inbox_id", None),
+            "thread_id": ("thread_id", None),
+            "thread": ("thread", "InboxThreadSummary"),
+        },
+    ),
     "InboxThreadAssignedEventData": (
         None,
         {
@@ -444,53 +481,6 @@ WIRE_SCHEMAS_PART_6: dict[str, tuple[Any, dict[str, tuple[str, str | None]]]] = 
             "download_url": ("download_url", None),
             "expires_at": ("expires_at", None),
             "size": ("size", None),
-        },
-    ),
-    "GetReceivedEmailResponseAttachmentsItem": (
-        None,
-        {
-            "id": ("id", None),
-            "filename": ("filename", None),
-            "content_type": ("content_type", None),
-            "content_id": ("content_id", None),
-            "content_disposition": ("content_disposition", None),
-            "size": ("size", None),
-        },
-    ),
-    "ListReceivedEmailsResponseDataItem": (
-        None,
-        {
-            "id": ("id", None),
-            "to": ("to", None),
-            "from_": ("from", None),
-            "subject": ("subject", None),
-            "message_id": ("message_id", None),
-            "bcc": ("bcc", None),
-            "cc": ("cc", None),
-            "reply_to": ("reply_to", None),
-            "created_at": ("created_at", None),
-            "attachments": ("attachments", "ListReceivedEmailsResponseDataItemAttachmentsItem"),
-        },
-    ),
-    "ListReceivedEmailsResponseDataItemAttachmentsItem": (
-        None,
-        {
-            "id": ("id", None),
-            "filename": ("filename", None),
-            "content_type": ("content_type", None),
-            "content_id": ("content_id", None),
-            "content_disposition": ("content_disposition", None),
-            "size": ("size", None),
-        },
-    ),
-    "ListWebhooksResponseDataItem": (
-        None,
-        {
-            "id": ("id", None),
-            "endpoint": ("endpoint", None),
-            "events": ("events", None),
-            "status": ("status", None),
-            "created_at": ("created_at", None),
         },
     ),
 }

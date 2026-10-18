@@ -17,7 +17,7 @@ WIRE_SCHEMAS_PART_1: dict[str, tuple[Any, dict[str, tuple[str, str | None]]]] = 
             "reply_to": ("reply_to", None),
             "html": ("html", None),
             "text": ("text", None),
-            "template": ("template", None),
+            "template": ("template", "EmailTemplateInput"),
             "headers": ("headers", None),
             "scheduled_at": ("scheduled_at", None),
             "attachments": ("attachments", "Attachment"),

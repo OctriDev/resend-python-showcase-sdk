@@ -99,7 +99,8 @@ async def emails_send(
         reply_to: Reply-to email address. For multiple addresses, send as an array of strings.
         html: The HTML version of the message.
         text: The plain text version of the message.
-        template: Optional API value serialized in the `template` wire field.
+        template: Use a published template to send the email. If provided, do not include html or
+            text.
         headers: Custom headers to add to the email.
         scheduled_at: Schedule email to be sent later. The date should be in ISO 8601 format.
         attachments: Optional array value serialized in the `attachments` wire field.
@@ -196,7 +197,8 @@ def emails_send_sync(
         reply_to: Reply-to email address. For multiple addresses, send as an array of strings.
         html: The HTML version of the message.
         text: The plain text version of the message.
-        template: Optional API value serialized in the `template` wire field.
+        template: Use a published template to send the email. If provided, do not include html or
+            text.
         headers: Custom headers to add to the email.
         scheduled_at: Schedule email to be sent later. The date should be in ISO 8601 format.
         attachments: Optional array value serialized in the `attachments` wire field.

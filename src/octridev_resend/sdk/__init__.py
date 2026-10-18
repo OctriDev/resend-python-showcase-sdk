@@ -104,4 +104,4 @@ class AsyncResend(_ResendBase):
         self.inboxes = _AsyncInboxesNamespace(config)
 
 
-__all__ = ["Resend", "AsyncResend"]
+__all__ = ["AsyncResend", "Resend"]
