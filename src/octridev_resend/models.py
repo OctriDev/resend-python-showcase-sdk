@@ -263,11 +263,15 @@ from .types import (
     UpdateEmailOptions,
     UpdateEventRequest,
     UpdateEventResponse,
+    UpdateInboxAgentOptions,
     UpdateInboxAgentResponseSuccess,
+    UpdateInboxDraftOptions,
     UpdateInboxDraftResponseSuccess,
     UpdateInboxLabelOptions,
     UpdateInboxLabelResponseSuccess,
+    UpdateInboxOptions,
     UpdateInboxResponseSuccess,
+    UpdateInboxThreadOptions,
     UpdateInboxThreadResponseSuccess,
     UpdateSegmentOptions,
     UpdateSegmentResponseSuccess,
@@ -325,19 +329,7 @@ _SCHEMAS: dict[str, Any] = {
             },
             "html": {"python": "html", "type": "string"},
             "text": {"python": "text", "type": "string"},
-            "template": {
-                "python": "template",
-                "required": ["id"],
-                "properties": {
-                    "id": {"python": "id", "type": "string"},
-                    "variables": {
-                        "python": "variables",
-                        "type": "object",
-                        "additionalProperties": {"oneOf": [{"type": "string"}, {"type": "number"}]},
-                    },
-                },
-                "allOf": [{"ref": "EmailTemplateInput"}, {}],
-            },
+            "template": {"python": "template", "ref": "EmailTemplateInput"},
             "headers": {"python": "headers", "type": "object"},
             "scheduled_at": {"python": "scheduled_at", "type": "string"},
             "attachments": {
@@ -3086,7 +3078,6 @@ _SCHEMAS: dict[str, Any] = {
             "name": {"python": "name", "type": "string", "minLength": 1, "maxLength": 64},
             "from_name": {"python": "from_name", "type": "string", "maxLength": 78},
         },
-        "anyOf": [{"required": ["name"]}, {"required": ["from_name"]}],
     },
     "UpdateInboxResponseSuccess": {
         "type": "object",
@@ -3149,11 +3140,6 @@ _SCHEMAS: dict[str, Any] = {
                 "items": {"type": "string"},
             },
         },
-        "anyOf": [
-            {"required": ["instructions"]},
-            {"required": ["tone"]},
-            {"required": ["enabled_actions"]},
-        ],
     },
     "UpdateInboxAgentResponseSuccess": {
         "type": "object",
@@ -3428,12 +3414,6 @@ _SCHEMAS: dict[str, Any] = {
                 "items": {"type": "string", "format": "uuid"},
             },
         },
-        "anyOf": [
-            {"required": ["read"]},
-            {"required": ["folder"]},
-            {"required": ["add_label_ids"]},
-            {"required": ["remove_label_ids"]},
-        ],
     },
     "UpdateInboxThreadResponseSuccess": {
         "type": "object",
@@ -3891,15 +3871,6 @@ _SCHEMAS: dict[str, Any] = {
                 "items": {"ref": "InboxDraftAttachmentInput"},
             },
         },
-        "anyOf": [
-            {"required": ["to"]},
-            {"required": ["cc"]},
-            {"required": ["bcc"]},
-            {"required": ["subject"]},
-            {"required": ["text"]},
-            {"required": ["html"]},
-            {"required": ["attachments"]},
-        ],
     },
     "UpdateInboxDraftResponseSuccess": {
         "type": "object",
@@ -4508,10 +4479,12 @@ _MODEL_TYPES: dict[str, type[Any]] = {
     "CreateInboxResponseSuccess": CreateInboxResponseSuccess,
     "GetInboxResponseSuccess": GetInboxResponseSuccess,
     "ListInboxesResponseSuccess": ListInboxesResponseSuccess,
+    "UpdateInboxOptions": UpdateInboxOptions,
     "UpdateInboxResponseSuccess": UpdateInboxResponseSuccess,
     "RemoveInboxResponseSuccess": RemoveInboxResponseSuccess,
     "InboxAgent": InboxAgent,
     "GetInboxAgentResponseSuccess": GetInboxAgentResponseSuccess,
+    "UpdateInboxAgentOptions": UpdateInboxAgentOptions,
     "UpdateInboxAgentResponseSuccess": UpdateInboxAgentResponseSuccess,
     "InboxLabel": InboxLabel,
     "ListInboxLabelsResponseSuccess": ListInboxLabelsResponseSuccess,
@@ -4527,6 +4500,7 @@ _MODEL_TYPES: dict[str, type[Any]] = {
     "ListInboxThreadsResponseSuccess": ListInboxThreadsResponseSuccess,
     "SearchInboxThreadsResponseSuccess": SearchInboxThreadsResponseSuccess,
     "GetInboxThreadResponseSuccess": GetInboxThreadResponseSuccess,
+    "UpdateInboxThreadOptions": UpdateInboxThreadOptions,
     "UpdateInboxThreadResponseSuccess": UpdateInboxThreadResponseSuccess,
     "RemoveInboxThreadResponseSuccess": RemoveInboxThreadResponseSuccess,
     "InboxThreadEmailAttachment": InboxThreadEmailAttachment,
@@ -4545,6 +4519,7 @@ _MODEL_TYPES: dict[str, type[Any]] = {
     "CreateInboxDraftOptions": CreateInboxDraftOptions,
     "CreateInboxDraftResponseSuccess": CreateInboxDraftResponseSuccess,
     "GetInboxDraftResponseSuccess": GetInboxDraftResponseSuccess,
+    "UpdateInboxDraftOptions": UpdateInboxDraftOptions,
     "UpdateInboxDraftResponseSuccess": UpdateInboxDraftResponseSuccess,
     "RemoveInboxDraftResponseSuccess": RemoveInboxDraftResponseSuccess,
     "SendInboxDraftOptions": SendInboxDraftOptions,
@@ -6089,6 +6064,11 @@ def create_list_inboxes_response_success(value: Mapping[str, object]) -> ListInb
     return cast(ListInboxesResponseSuccess, _construct_model(value, "ListInboxesResponseSuccess"))
 
 
+def create_update_inbox_options(value: Mapping[str, object]) -> UpdateInboxOptions:
+    """Construct one UpdateInboxOptions after applying its schema constraints."""
+    return cast(UpdateInboxOptions, _construct_model(value, "UpdateInboxOptions"))
+
+
 def create_update_inbox_response_success(value: Mapping[str, object]) -> UpdateInboxResponseSuccess:
     """Construct one UpdateInboxResponseSuccess after applying its schema constraints."""
     return cast(UpdateInboxResponseSuccess, _construct_model(value, "UpdateInboxResponseSuccess"))
@@ -6111,6 +6091,11 @@ def create_get_inbox_agent_response_success(
     return cast(
         GetInboxAgentResponseSuccess, _construct_model(value, "GetInboxAgentResponseSuccess")
     )
+
+
+def create_update_inbox_agent_options(value: Mapping[str, object]) -> UpdateInboxAgentOptions:
+    """Construct one UpdateInboxAgentOptions after applying its schema constraints."""
+    return cast(UpdateInboxAgentOptions, _construct_model(value, "UpdateInboxAgentOptions"))
 
 
 def create_update_inbox_agent_response_success(
@@ -6219,6 +6204,11 @@ def create_get_inbox_thread_response_success(
     return cast(
         GetInboxThreadResponseSuccess, _construct_model(value, "GetInboxThreadResponseSuccess")
     )
+
+
+def create_update_inbox_thread_options(value: Mapping[str, object]) -> UpdateInboxThreadOptions:
+    """Construct one UpdateInboxThreadOptions after applying its schema constraints."""
+    return cast(UpdateInboxThreadOptions, _construct_model(value, "UpdateInboxThreadOptions"))
 
 
 def create_update_inbox_thread_response_success(
@@ -6359,6 +6349,11 @@ def create_get_inbox_draft_response_success(
     return cast(
         GetInboxDraftResponseSuccess, _construct_model(value, "GetInboxDraftResponseSuccess")
     )
+
+
+def create_update_inbox_draft_options(value: Mapping[str, object]) -> UpdateInboxDraftOptions:
+    """Construct one UpdateInboxDraftOptions after applying its schema constraints."""
+    return cast(UpdateInboxDraftOptions, _construct_model(value, "UpdateInboxDraftOptions"))
 
 
 def create_update_inbox_draft_response_success(
@@ -6817,11 +6812,15 @@ __all__ = [
     "create_update_email_options",
     "create_update_event_request",
     "create_update_event_response",
+    "create_update_inbox_agent_options",
     "create_update_inbox_agent_response_success",
+    "create_update_inbox_draft_options",
     "create_update_inbox_draft_response_success",
     "create_update_inbox_label_options",
     "create_update_inbox_label_response_success",
+    "create_update_inbox_options",
     "create_update_inbox_response_success",
+    "create_update_inbox_thread_options",
     "create_update_inbox_thread_response_success",
     "create_update_segment_options",
     "create_update_segment_response_success",

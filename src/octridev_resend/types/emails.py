@@ -35,7 +35,7 @@ class SendEmailRequest(BaseModel):
     text: str | NotGiven = NOT_GIVEN
     """The plain text version of the message."""
     template: EmailTemplateInput | NotGiven = NOT_GIVEN
-    """Optional API value serialized in the `template` wire field."""
+    """Use a published template to send the email. If provided, do not include html or text."""
     headers: dict[str, Any] | NotGiven = NOT_GIVEN
     """Custom headers to add to the email."""
     scheduled_at: str | NotGiven = NOT_GIVEN

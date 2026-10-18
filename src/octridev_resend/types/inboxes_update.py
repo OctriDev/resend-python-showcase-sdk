@@ -3,22 +3,51 @@
 
 from __future__ import annotations
 
-from typing import Annotated, Any, TypeAlias
+from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, WrapValidator, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, field_validator, model_validator
 
 from octridev_resend.client import NOT_GIVEN, NotGiven
+from octridev_resend.types.inboxes_inbox import InboxDraftAttachmentInput
 
 from ..validation import (
+    validate_items,
     validate_length,
     validate_pattern,
     validate_required,
-    validate_union_candidate,
     validate_uuid,
 )
 
-# UpdateInboxOptions is a union type
-UpdateInboxOptions: TypeAlias = Annotated[Any, WrapValidator(validate_union_candidate)]
+
+class UpdateInboxOptions(BaseModel):
+    """Provide at least one of `name` or `from_name`."""
+
+    model_config = ConfigDict(populate_by_name=False, arbitrary_types_allowed=True)
+
+    name: str | NotGiven = NOT_GIVEN
+    """
+    New internal name for the inbox. Recipients do not see it. Between 1 and 64 characters after trimming.
+
+    @example "Customer Support"
+    """
+    from_name: str | NotGiven = NOT_GIVEN
+    """
+    The name recipients see when mail is sent from this inbox. A plain name, not a `Name <email>` address. Max 78 characters. It cannot contain a colon, `<`, `>`, line breaks, or other control characters. An email address inside the name must be on a domain the team has verified for sending. An empty string removes it.
+
+    @example "Ada from Support"
+    """
+
+    @field_validator("name")
+    @classmethod
+    def _validate_name(cls, value):
+        validate_length("name", value, min=1, max=64)
+        return value
+
+    @field_validator("from_name")
+    @classmethod
+    def _validate_from_name(cls, value):
+        validate_length("from_name", value, max=78)
+        return value
 
 
 class UpdateInboxResponseSuccess(BaseModel):
@@ -50,8 +79,57 @@ class UpdateInboxResponseSuccess(BaseModel):
         return value
 
 
-# UpdateInboxAgentOptions is a union type
-UpdateInboxAgentOptions: TypeAlias = Annotated[Any, WrapValidator(validate_union_candidate)]
+class UpdateInboxAgentOptions(BaseModel):
+    """At least one of `instructions`, `tone`, or `enabled_actions` must be provided. Omitted fields keep their current value."""
+
+    model_config = ConfigDict(populate_by_name=False, arbitrary_types_allowed=True)
+
+    instructions: str | None | NotGiven = NOT_GIVEN
+    """
+    Instructions the agent follows when it handles the threads of the inbox. Max 4000 characters. Leading and trailing whitespace is trimmed, and the trimmed value must not be empty. Send null to clear the instructions.
+
+    @example "Answer refund questions yourself. Escalate legal threats."
+    """
+    tone: (
+        Literal[
+            "concise_professional", "concise_casual", "expanded_professional", "expanded_casual"
+        ]
+        | str
+        | None
+        | NotGiven
+    ) = NOT_GIVEN
+    """
+    The tone the agent writes in. Send null to clear the tone.
+
+    @example "concise_professional"
+    """
+    enabled_actions: (
+        list[
+            Literal[
+                "draft_reply",
+                "forward_thread",
+                "add_labels",
+                "assign_thread",
+                "mark_as_spam",
+                "archive_thread",
+                "delete_thread",
+            ]
+            | str
+        ]
+        | NotGiven
+    ) = NOT_GIVEN
+    """
+    The actions the agent can take. Replaces the whole set. Duplicates are removed. Send an empty array to disable all actions.
+
+    @example ["draft_reply","add_labels"]
+    """
+
+    @field_validator("instructions")
+    @classmethod
+    def _validate_instructions(cls, value):
+        if value is not None:
+            validate_length("instructions", value, min=1, max=4000)
+        return value
 
 
 class UpdateInboxAgentResponseSuccess(BaseModel):
@@ -143,9 +221,80 @@ class UpdateInboxLabelResponseSuccess(BaseModel):
         return value
 
 
-# UpdateInboxThreadOptions is a union type
-UpdateInboxThreadOptions: TypeAlias = Annotated[Any, WrapValidator(validate_union_candidate)]
+class UpdateInboxThreadOptions(BaseModel):
+    """At least one of `read`, `folder`, `add_label_ids`, or `remove_label_ids` is required. A label ID cannot be both added and removed in the same request."""
+
+    model_config = ConfigDict(populate_by_name=False, arbitrary_types_allowed=True)
+
+    read: bool | NotGiven = NOT_GIVEN
+    """
+    Marks every email in the thread read or unread.
+
+    @example true
+    """
+    folder: Literal["inbox", "archive", "spam", "trash"] | str | NotGiven = NOT_GIVEN
+    """
+    Moves the thread to this folder. `sent` is assigned automatically and cannot be set.
+
+    @example "archive"
+    """
+    add_label_ids: list[str] | NotGiven = NOT_GIVEN
+    """
+    Label IDs to apply to the thread. Between 1 and 10 IDs. A label ID that does not exist in the inbox returns a 404.
+
+    @example ["7f9c1d2e-4a6b-4c3d-8e15-9b0a7c6d5e34"]
+    """
+    remove_label_ids: list[str] | NotGiven = NOT_GIVEN
+    """
+    Label IDs to remove from the thread. Between 1 and 10 IDs. The labels themselves are kept. A label ID that does not exist in the inbox returns a 404.
+
+    @example ["2b6d0f4e-8a1c-4e3b-9d57-1c0e8a6f4b21"]
+    """
+
+    @field_validator("add_label_ids")
+    @classmethod
+    def _validate_add_label_ids(cls, value):
+        validate_items("add_label_ids", value, min=1, max=10)
+        return value
+
+    @field_validator("remove_label_ids")
+    @classmethod
+    def _validate_remove_label_ids(cls, value):
+        validate_items("remove_label_ids", value, min=1, max=10)
+        return value
 
 
-# UpdateInboxDraftOptions is a union type
-UpdateInboxDraftOptions: TypeAlias = Annotated[Any, WrapValidator(validate_union_candidate)]
+class UpdateInboxDraftOptions(BaseModel):
+    """Send at least one of `to`, `cc`, `bcc`, `subject`, `text`, `html` or `attachments`. Omitted fields are left unchanged. Setting `text` or `html` replaces the whole body, so the body part you omit becomes `null`. The merged draft must contain at least one non-empty field, and its combined recipients cannot exceed 50."""
+
+    model_config = ConfigDict(populate_by_name=False, arbitrary_types_allowed=True)
+
+    to: str | list[str] | None | NotGiven = NOT_GIVEN
+    """
+    The recipients. For multiple addresses, send an array of strings. Each value can include a friendly name. Pass `null` to clear. Each address is `email@example.com` or `Name <email@example.com>`. An address that is not valid returns a 422.
+
+    @example ["ada@example.org"]
+    """
+    cc: str | list[str] | None | NotGiven = NOT_GIVEN
+    """The CC recipients. Pass `null` or `[]` to clear. Each address is `email@example.com` or `Name <email@example.com>`. An address that is not valid returns a 422."""
+    bcc: str | list[str] | None | NotGiven = NOT_GIVEN
+    """The BCC recipients. Pass `null` or `[]` to clear. Each address is `email@example.com` or `Name <email@example.com>`. An address that is not valid returns a 422."""
+    subject: str | None | NotGiven = NOT_GIVEN
+    """
+    The subject. Max 2000 characters. Cannot be only whitespace or contain a line break. Pass `null` to clear.
+
+    @example "Refund issued for order 1041"
+    """
+    html: str | None | NotGiven = NOT_GIVEN
+    """The HTML body. Pass `null` to clear."""
+    text: str | None | NotGiven = NOT_GIVEN
+    """The plain text body. Pass `null` to clear."""
+    attachments: list[InboxDraftAttachmentInput] | None | NotGiven = NOT_GIVEN
+    """Files to store on the draft. Each one needs `content`, `filename` and `content_type`. A `path` without `content` returns a 422, and when both are sent, `path` is ignored. A `content_id` returns a 422. The files on a draft can total at most 25 MB. An empty file or a blocked file type returns a 422. Sending the field replaces every attachment on the draft. Send `[]` to remove them all. `null` also removes them all."""
+
+    @field_validator("subject")
+    @classmethod
+    def _validate_subject(cls, value):
+        if value is not None:
+            validate_length("subject", value, min=1, max=2000)
+        return value

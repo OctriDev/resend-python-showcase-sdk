@@ -37,6 +37,13 @@ WIRE_SCHEMAS_PART_5: dict[str, tuple[Any, dict[str, tuple[str, str | None]]]] = 
             "data": ("data", "ListInboxesResponseSuccessDataItem"),
         },
     ),
+    "UpdateInboxOptions": (
+        None,
+        {
+            "name": ("name", None),
+            "from_name": ("from_name", None),
+        },
+    ),
     "UpdateInboxResponseSuccess": (
         None,
         {
@@ -65,6 +72,14 @@ WIRE_SCHEMAS_PART_5: dict[str, tuple[Any, dict[str, tuple[str, str | None]]]] = 
         None,
         {
             "object": ("object", None),
+            "instructions": ("instructions", None),
+            "tone": ("tone", None),
+            "enabled_actions": ("enabled_actions", None),
+        },
+    ),
+    "UpdateInboxAgentOptions": (
+        None,
+        {
             "instructions": ("instructions", None),
             "tone": ("tone", None),
             "enabled_actions": ("enabled_actions", None),
@@ -191,6 +206,15 @@ WIRE_SCHEMAS_PART_5: dict[str, tuple[Any, dict[str, tuple[str, str | None]]]] = 
             "folder": ("folder", None),
             "labels": ("labels", "InboxThreadLabel"),
             "read": ("read", None),
+        },
+    ),
+    "UpdateInboxThreadOptions": (
+        None,
+        {
+            "read": ("read", None),
+            "folder": ("folder", None),
+            "add_label_ids": ("add_label_ids", None),
+            "remove_label_ids": ("remove_label_ids", None),
         },
     ),
     "UpdateInboxThreadResponseSuccess": (
@@ -406,6 +430,18 @@ WIRE_SCHEMAS_PART_5: dict[str, tuple[Any, dict[str, tuple[str, str | None]]]] = 
             "attachments": ("attachments", "InboxDraftAttachment"),
         },
     ),
+    "UpdateInboxDraftOptions": (
+        None,
+        {
+            "to": ("to", None),
+            "cc": ("cc", None),
+            "bcc": ("bcc", None),
+            "subject": ("subject", None),
+            "html": ("html", None),
+            "text": ("text", None),
+            "attachments": ("attachments", None),
+        },
+    ),
     "UpdateInboxDraftResponseSuccess": (
         None,
         {
@@ -487,43 +523,6 @@ WIRE_SCHEMAS_PART_5: dict[str, tuple[Any, dict[str, tuple[str, str | None]]]] = 
             "created_at": ("created_at", None),
             "updated_at": ("updated_at", None),
             "attachments": ("attachments", "InboxDraftAttachment"),
-        },
-    ),
-    "InboxEventData": (
-        None,
-        {
-            "source": ("source", None),
-            "inbox_id": ("inbox_id", None),
-            "inbox": ("inbox", "Inbox"),
-        },
-    ),
-    "InboxDeletedEventData": (
-        None,
-        {
-            "source": ("source", None),
-            "inbox_id": ("inbox_id", None),
-        },
-    ),
-    "InboxThreadEmailEventData": (
-        None,
-        {
-            "source": ("source", None),
-            "inbox_id": ("inbox_id", None),
-            "thread_id": ("thread_id", None),
-            "email_id": ("email_id", None),
-            "thread": ("thread", "InboxThreadSummary"),
-            "email": ("email", "InboxEventEmail"),
-        },
-    ),
-    "InboxThreadFolderUpdatedEventData": (
-        None,
-        {
-            "from_": ("from", None),
-            "to": ("to", None),
-            "source": ("source", None),
-            "inbox_id": ("inbox_id", None),
-            "thread_id": ("thread_id", None),
-            "thread": ("thread", "InboxThreadSummary"),
         },
     ),
 }
