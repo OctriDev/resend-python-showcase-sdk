@@ -14,7 +14,7 @@ python -m pip install git+https://github.com/OctriDev/resend-python-showcase-sdk
 
 ## Quickstart
 
-The example calls `client.domains.get` (GET `/domains/{domain_id}`) with example values for its required arguments.
+The example calls `client.emails.send` (POST `/emails`) with example values for its required arguments.
 
 ```python
 import os
@@ -27,7 +27,7 @@ config = ClientConfig(
     auth=ClientAuthConfig(bearer_auth=os.environ["API_TOKEN"]),
 )
 client = Resend(config)
-result = client.domains.get(domain_id="domain-1")
+result = client.emails.send(from_="user@example.com", to="user@example.com", subject="subject")
 print(result)
 ```
 
