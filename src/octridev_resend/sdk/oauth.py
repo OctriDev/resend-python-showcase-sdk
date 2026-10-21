@@ -6,20 +6,25 @@ from __future__ import annotations
 from functools import partial
 
 from ..client import ClientConfig
-from ..methods.oauth import list_grants, list_grants_sync, revoke_grant, revoke_grant_sync
+from ..methods.oauth import (
+    list_grants,
+    list_grants_sync,
+    revoke_oauth_grant,
+    revoke_oauth_grant_sync,
+)
 
 
 class _OauthNamespace:
     def __init__(self, config: ClientConfig) -> None:
         self.list_grants = partial(list_grants_sync, config)
         self.list_grants.__doc__ = list_grants_sync.__doc__
-        self.revoke_grant = partial(revoke_grant_sync, config)
-        self.revoke_grant.__doc__ = revoke_grant_sync.__doc__
+        self.revoke_grant = partial(revoke_oauth_grant_sync, config)
+        self.revoke_grant.__doc__ = revoke_oauth_grant_sync.__doc__
 
 
 class _AsyncOauthNamespace:
     def __init__(self, config: ClientConfig) -> None:
         self.list_grants = partial(list_grants, config)
         self.list_grants.__doc__ = list_grants.__doc__
-        self.revoke_grant = partial(revoke_grant, config)
-        self.revoke_grant.__doc__ = revoke_grant.__doc__
+        self.revoke_grant = partial(revoke_oauth_grant, config)
+        self.revoke_grant.__doc__ = revoke_oauth_grant.__doc__

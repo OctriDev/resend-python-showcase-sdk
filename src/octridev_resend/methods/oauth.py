@@ -140,7 +140,7 @@ def list_grants_sync(
     )
 
 
-async def revoke_grant(
+async def revoke_oauth_grant(
     _client_config: ClientConfig,
     oauth_grant_id: str,
     *,
@@ -157,7 +157,7 @@ async def revoke_grant(
     _resp = await sdk_request(
         "DELETE",
         f"/oauth/grants/{encode_path_segment(oauth_grant_id)}",
-        operation_id="revoke_grant",
+        operation_id="revoke_oauth_grant",
         response_decoder="json",
         request_options=request_options,
         config=_client_config,
@@ -171,7 +171,7 @@ async def revoke_grant(
     )
 
 
-def revoke_grant_sync(
+def revoke_oauth_grant_sync(
     _client_config: ClientConfig,
     oauth_grant_id: str,
     *,
@@ -188,7 +188,7 @@ def revoke_grant_sync(
     _resp = sdk_request_sync(
         "DELETE",
         f"/oauth/grants/{encode_path_segment(oauth_grant_id)}",
-        operation_id="revoke_grant",
+        operation_id="revoke_oauth_grant",
         response_decoder="json",
         request_options=request_options,
         config=_client_config,
@@ -205,6 +205,6 @@ def revoke_grant_sync(
 __all__ = [
     "list_grants",
     "list_grants_sync",
-    "revoke_grant",
-    "revoke_grant_sync",
+    "revoke_oauth_grant",
+    "revoke_oauth_grant_sync",
 ]
