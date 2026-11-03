@@ -27,7 +27,9 @@ config = ClientConfig(
     auth=ClientAuthConfig(bearer_auth=os.environ["RESEND_API_KEY"]),
 )
 client = Resend(config)
-result = client.emails.send(from_="Acme <onboarding@resend.dev>", to="delivered@resend.dev", subject="Hello from Octri")
+result = client.emails.send(
+    from_="Acme <onboarding@resend.dev>", to="delivered@resend.dev", subject="Hello from Octri"
+)
 print(result)
 ```
 
